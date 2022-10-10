@@ -33,25 +33,8 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col v-for="i in booksShow" :key="i._id" style="cursor: pointer;display: flex; justify-content: center;">
-            <v-card class="fill-height" style="height: 530px; width: 210px; position: relative;">
-            <v-icon v-if="verifyCollection(i)" @click="removeCollection(i)" color="blue" style="position: absolute; top:5px; right:5px; z-index: 10;">mdi-star-check</v-icon>
-            <v-icon v-else @click="addCollection(i)" color="blue" style="position: absolute; top:5px; right:5px; z-index: 10;">mdi-star-check-outline</v-icon>
-              <v-img
-                width="100%"
-                height="260px"
-                :src="i.cover"
-              ></v-img>
-              <v-card-title class="pb-0 title-book" :title="i.title" @click="goTo(i.url)">{{i.title}}</v-card-title>
-              <v-card-actions style="position: absolute; bottom:0; width: 100%">
-                <div class="d-flex flex-column">            
-                  <span><v-icon small>mdi-account</v-icon> {{i.author}}</span>
-                  <span><v-icon small>mdi-tag</v-icon> {{i.category}}</span>
-                  <span><v-icon small>mdi-barcode</v-icon> {{i.isbn}}</span>
-                  <span><v-icon small>mdi-calendar</v-icon> {{i.createAt}}</span>
-                </div>
-              </v-card-actions>
-            </v-card>
+          <v-col v-for="i in booksShow" :key="i._id" class="list-books">
+            <book :book="i"/>
           </v-col>
         </v-row>
       </v-col>
@@ -59,9 +42,13 @@
   </template>
   
   <script>
-  import { mapMutations, mapState } from 'vuex'
+  import book from '@/components/book'
+  import { mapState } from 'vuex'
   export default {
     name: 'listCollections',
+    components: {
+      book
+    },
     data: () => {
       return {
         books: [],
@@ -86,10 +73,6 @@
       }
     },
     methods: {
-      ...mapMutations("collections", ['ADD_COLLECTION', 'REMOVE_COLLECTION']),
-      goTo(url){
-        window.open(url, '_blank');
-      },
       formatDate (date) {
         if (!date) return null
         const [year, month, day] = date.split('-')
@@ -108,32 +91,14 @@
           return null
         }
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-      },
-      addCollection(book){
-        this.ADD_COLLECTION(book)
-      },
-      removeCollection(book){
-        this.REMOVE_COLLECTION(book)
-      },
-      verifyCollection(book){
-        return this.collections.find(x => x._id == book._id)
       }
     }
   }
   </script>
   <style lang="scss">
-  .title-book{
-    font-size: 18px;
-    height: 145px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    align-items: flex-start;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    &:hover{
-      text-decoration: underline;
-      color: rgb(83, 83, 240);
-    }
+  .list-books{
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
   }
   </style>

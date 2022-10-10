@@ -33,25 +33,8 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col v-for="i in booksShow" :key="i._id" style="cursor: pointer;display: flex; justify-content: center;">
-          <v-card class="fill-height" style="height: 530px; width: 210px; position: relative;">
-          <v-icon v-if="verifyCollection(i)" @click="removeCollection(i)" color="blue" style="position: absolute; top:5px; right:5px; z-index: 10;">mdi-star-check</v-icon>
-          <v-icon v-else @click="addCollection(i)" color="blue" style="position: absolute; top:5px; right:5px; z-index: 10;">mdi-star-check-outline</v-icon>
-            <v-img
-              width="100%"
-              height="260px"
-              :src="i.cover"
-            ></v-img>
-            <v-card-title class="pb-0 title-book" :title="i.title" @click="goTo(i.url)">{{i.title}}</v-card-title>
-            <v-card-actions style="position: absolute; bottom:0; width: 100%">
-              <div class="d-flex flex-column">            
-                <span><v-icon small>mdi-account</v-icon> {{i.author}}</span>
-                <span><v-icon small>mdi-tag</v-icon> {{i.category}}</span>
-                <span><v-icon small>mdi-barcode</v-icon> {{i.isbn}}</span>
-                <span><v-icon small>mdi-calendar</v-icon> {{i.createAt}}</span>
-              </div>
-            </v-card-actions>
-          </v-card>
+        <v-col v-for="i in booksShow" :key="i._id" class="list-books">
+          <book :book="i"/>
         </v-col>
       </v-row>
     </v-col>
@@ -59,9 +42,13 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from 'vuex'
+import book from '@/components/book'
+import { mapActions } from 'vuex'
 export default {
   name: 'listBooks',
+  components: {
+    book
+  },
   data: () => {
     return {
       books: [],
@@ -71,7 +58,6 @@ export default {
     }
   },
   computed:{
-    ...mapState("collections", ['collections']),
     booksShow(){
       let books = this.books.filter(x => x.show)
       if(!!this.dateFormatted){
@@ -86,7 +72,6 @@ export default {
     }
   },
   methods: {
-    ...mapMutations("collections", ['ADD_COLLECTION', 'REMOVE_COLLECTION']),
     ...mapActions("books", ['getBooksService']),
     async getBooks(){
       try {
@@ -97,9 +82,6 @@ export default {
       } catch (error) {
         console.log("error", error)
       }
-    },
-    goTo(url){
-      window.open(url, '_blank');
     },
     formatDate (date) {
       if (!date) return null
@@ -119,15 +101,6 @@ export default {
         return null
       }
       return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
-    },
-    addCollection(book){
-      this.ADD_COLLECTION(book)
-    },
-    removeCollection(book){
-      this.REMOVE_COLLECTION(book)
-    },
-    verifyCollection(book){
-      return this.collections.find(x => x._id == book._id)
     }
   },
   async mounted() {
@@ -149,5 +122,11 @@ export default {
     text-decoration: underline;
     color: rgb(83, 83, 240);
   }
+}
+
+.list-books{
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
 }
 </style>
