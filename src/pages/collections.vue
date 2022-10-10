@@ -32,9 +32,14 @@
             </v-menu>
           </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="booksShow.length != 0">
           <v-col v-for="i in booksShow" :key="i._id" class="list-books">
             <book :book="i"/>
+          </v-col>
+        </v-row>
+        <v-row v-else>
+          <v-col>
+            <span>Not Collections yet</span>
           </v-col>
         </v-row>
       </v-col>

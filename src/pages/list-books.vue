@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col>
+    <v-col v-if="!loading">
       <v-row>
         <v-col :cols="0" :sm="6" :md="8"></v-col>
         <v-col :cols="12" :sm="6" :md="4">
@@ -32,11 +32,22 @@
           </v-menu>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="booksShow.length != 0">
         <v-col v-for="i in booksShow" :key="i._id" class="list-books">
           <book :book="i"/>
         </v-col>
       </v-row>
+      <v-row v-else>
+        <v-col>
+          <span>Not Books yet</span>
+        </v-col>
+      </v-row>
+    </v-col>
+    <v-col class="loading-container" v-else>
+      <v-progress-circular
+        indeterminate
+        color="primary"
+      ></v-progress-circular>
     </v-col>
   </v-row>
 </template>
@@ -54,7 +65,8 @@ export default {
       books: [],
       open: false,
       date: null,
-      dateFormatted: null
+      dateFormatted: null,
+      loading: true
     }
   },
   computed:{
@@ -75,12 +87,15 @@ export default {
     ...mapActions("books", ['getBooksService']),
     async getBooks(){
       try {
+        this.loading = true
         let res = await this.getBooksService()
         if(res.status == 'success'){
           this.books = res.data
         }
       } catch (error) {
         console.log("error", error)
+      } finally {
+        this.loading = false
       }
     },
     formatDate (date) {
@@ -109,24 +124,15 @@ export default {
 }
 </script>
 <style lang="scss">
-.title-book{
-  font-size: 18px;
-  height: 145px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  align-items: flex-start;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  &:hover{
-    text-decoration: underline;
-    color: rgb(83, 83, 240);
-  }
-}
-
 .list-books{
   cursor: pointer;
   display: flex;
   justify-content: center;
+}
+.loading-container{
+  justify-content: center;
+  display: flex;
+  height: 80vh;
+  align-items: center;
 }
 </style>
