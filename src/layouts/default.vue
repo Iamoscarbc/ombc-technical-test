@@ -51,13 +51,18 @@ export default {
       items: [
         {
           icon: 'mdi-apps',
-          title: 'Technical Test 1',
+          title: 'Algorithm Cesar',
           to: '/'
         },
         {
           icon: 'mdi-chart-bubble',
-          title: 'Technical Test 2',
-          to: '/test2'
+          title: 'List Books',
+          to: '/list-books'
+        },
+        {
+          icon: 'mdi-chart-bubble',
+          title: 'Collections',
+          to: '/collections'
         }
       ],
       title: 'OMBC-Technical-Test'

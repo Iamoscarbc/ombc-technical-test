@@ -42,6 +42,9 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     "@nuxtjs/proxy",
+    ['nuxt-vuex-localstorage', {
+      localStorage: ['collections']
+    }]
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
